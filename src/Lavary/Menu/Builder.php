@@ -554,7 +554,9 @@ class Builder {
                 'title' => $item->title,
                 'name' => $item->nickname,
                 'url' => $item->url(),
+                'data' => $item->data
             ];
+
             if( $item->hasChildren() ) {
                 $arrItem['children'] = $this->renderJson($item->id);
             }
