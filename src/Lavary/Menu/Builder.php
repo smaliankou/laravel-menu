@@ -538,6 +538,32 @@ class Builder {
 
 		return $items;
 	}
+
+    /**
+     * Generate the menu items as json using a recursive function
+     *
+     * @param int $parent
+     * @return string
+     */
+    public function renderJson($parent = null){
+        $items = [];
+
+        foreach ($this->whereParent($parent) as $item)
+        {
+            $arrItem = [
+                'title' => $item->title,
+                'name' => $item->nickname,
+                'url' => $item->url(),
+            ];
+            if( $item->hasChildren() ) {
+                $arrItem['children'] = $this->renderJson($item->id);
+            }
+
+            $items[] = $arrItem;
+        }
+
+        return $items;
+    }
 		
 	/**
 	 * Returns the menu as an unordered list.
@@ -568,6 +594,16 @@ class Builder {
 	{
 		return '<div' . self::attributes($attributes) . '>' . $this->render('div', null, $childrenAttributes) . '</div>';
 	}
+
+    /**
+     * Returns the menu as json.
+     *
+     * @return string
+     */
+    public function asJson()
+    {
+        return json_encode($this->renderJson());
+    }
 
 	/**
 	 * Build an HTML attribute string from an array.
